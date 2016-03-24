@@ -13,6 +13,7 @@
 
 using std::string;
 using std::vector;
+
 const char* ClientCMD[ClientCMDNUM] = {"USER","PASS","PASV","ls","get","put","bye","lcd","cd"};
 char clientpath[MAXLINE] = ".";
 vector<string> clientfilevec;

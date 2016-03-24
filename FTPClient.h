@@ -9,6 +9,8 @@ extern const char* ClientCMD[ClientCMDNUM];					//客户端的命令列表
 extern char clientpath[MAXLINE];							//客户端的当前路径
 extern std::vector<std::string> clientfilevec;					//客户端当前路径下的文件名列表
 
+enum {User = 0,Pass,Pasv,Ls,Get,Put,Quit,Lcd,Cd};
+
 void showFileVec(int);
 int passPasvCmd(int,char*);
 void downloadFiles(int);

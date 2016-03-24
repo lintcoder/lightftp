@@ -41,13 +41,13 @@ int main(int argc,char* argv[])
 	   printf("username : ");
 	   scanf("%s",name);
 	   fflush(stdin);
-	   int nwrite = sprintf(line,"USER %s\r\n",name);
+	   int nwrite = sprintf(line,"%s %s\r\n",ClientCMD[User],name);
 	   write(connSock,line,nwrite);
 
 	   printf("password : ");
 	   scanf("%s",passwd);
 	   fflush(stdin);
-	   nwrite = sprintf(line,"PASS %s\r\n",passwd);
+	   nwrite = sprintf(line,"%s %s\r\n",ClientCMD[Pass],passwd);
 	   write(connSock,line,strlen(line));
 
 	   int nread = read(connSock,line,MAXLINE);
@@ -102,26 +102,26 @@ int main(int argc,char* argv[])
 
 	   switch(i)
 	   {
-		   case 3:
+		   case Ls:
 			   showFileVec(connSock);
 			   break;
-		   case 4:
+		   case Get:
 			   downloadFiles(connSock);
 			   break;
-		   case 5:
+		   case Put:
 			   if (!splitFiles(spaceptr,filename,numtodeal))
 				 printf("some files are not found!\n");
 			   else
 			   	 uploadFiles(connSock,numtodeal);
 			   break;
-		   case 6:
+		   case Quit:
 			   close(connSock);
 			   flag = false;
 			   break;
-		   case 7:
+		   case Lcd:
 			   printLocalFile(clientfilevec);
 			   break;
-               case 8:
+           case Cd:
 			   str = str.substr(spacepos+1);
 			   if (!changeLocalDir(str))
 				printf("invalid directory or permission denied!\n");

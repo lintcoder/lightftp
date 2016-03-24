@@ -87,7 +87,6 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 		}
 
 		line[nread] = '\0';
-		//printf("%s",line);
 
 		char* spacepos = strchr(line,' ');
 		if (spacepos == NULL)
@@ -110,10 +109,10 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 		char* pos = strstr(spacepos+1,"\r\n");
 		switch (i)
 		{
-			case 0:
+			case USER:
 				legaluser = strncmp(spacepos+1,USERNAME,pos-spacepos-1);
 				break;
-			case 1:
+			case PASS:
 				legalpasswd = strncmp(spacepos+1,PASSWD,pos-spacepos-1);
 				if (legaluser == 0 && legalpasswd == 0)
 				{
@@ -123,23 +122,23 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 				else
 					write(connfd,wrongmsg,strlen(wrongmsg));
 				break;
-			case 2:
+			case PASV:
 				char dataport[10];
 				initDataSock(&dataSock,&dataCltAddr);
 		//		printf("dataport : %d\n",dataCltAddr.sin_port);
 				nwrite = sprintf(dataport,"%d \r\n",dataCltAddr.sin_port);
 				dataport[nwrite] = '\0';
 				write(connfd,dataport,strlen(dataport));
-				
+
 				switch (passtype)
 				{
-					case 3:
+					case SHOW:
 						passFileVec(dataSock);
 						break;
-					case 4:
+					case GET:
 						sendFiles(dataSock,filename,numtodeal);
 						break;
-					case 5:
+					case PUT:
 						recvFiles(dataSock,filename,numtodeal);
 						break;
 					default:
@@ -148,7 +147,7 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 				}
 				close(dataSock);
 				break;
-			case 3:
+			case SHOW:
 				if (pos != spacepos+1)
 					write(connfd,wrongmsg,strlen(wrongmsg));
 				else
@@ -157,7 +156,7 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 					passtype = i;
 				}
 				break;
-			case 4:
+			case GET:
 				filename.clear();
                 numtodeal = splitFiles(spacepos+1,filename,1);
 				printf("numtodeal %d\n",numtodeal);
@@ -170,7 +169,7 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 					passtype = i;
 				}
 				break;
-			case 5:
+			case PUT:
 				filename.clear();
                 numtodeal = splitFiles(spacepos+1,filename,0);
 				printf("numtodeal %d\n",numtodeal);
@@ -182,7 +181,7 @@ void communicateWithClient(int connfd)								//处理客户端命令端口套�
 					passtype = i;
 				}
 				break;
-			case 6:
+			case QUIT:
 				close(connfd);
 				flag = false;
 				printf("client %d logged out\n",connfd);
@@ -227,7 +226,7 @@ void passFileVec(int datafd)									//传输本地文件名列表
 		strcat(data,string(servfilevec[i]+'\n').c_str());
 		datalen += servfilevec[i].size()+1;
 	}
-	pthread_mutex_lock(&filevec_mutex);
+	pthread_mutex_unlock(&filevec_mutex);
 	int nwrite = sprintf(line,"%d \r\n",datalen);
 	line[nwrite] = '\0';
 	

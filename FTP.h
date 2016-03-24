@@ -12,7 +12,7 @@ extern const int cmdport;			//服务器端的命令套接字端口
 extern const char rightmsg[10];		
 extern const char wrongmsg[10];
 extern const char* ServerCMD[];
-
+enum {USER = 0,PASS,PASV,SHOW,GET,PUT,QUIT};
 void err_sys(const char*);
 unsigned long getFileSize(const std::string&);
 void setFileVec(std::vector<std::string>&,char* path);
