@@ -1,0 +1,11 @@
+all: ftpclient clean
+ftpclient: Clientmain.o FTPClient.o FTP.o
+	g++ -o ftpclient Clientmain.o FTPClient.o FTP.o
+Clientmain.o: Clientmain.cpp FTPClient.h
+	g++ -c Clientmain.cpp
+FTPClient.o: FTPClient.cpp FTP.h
+	g++ -c FTPClient.cpp
+FTP.o: FTP.cpp FTP.h
+	g++ -c FTP.cpp
+clean:
+	-rm -f *.o
